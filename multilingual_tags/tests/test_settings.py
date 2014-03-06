@@ -1,4 +1,5 @@
 """Settings that need to be set in order to run the tests."""
+import logging
 import os
 
 gettext = lambda s: s
@@ -68,3 +69,5 @@ INSTALLED_APPS = EXTERNAL_APPS + INTERNAL_APPS
 COVERAGE_MODULE_EXCLUDES += EXTERNAL_APPS
 
 SECRET_KEY = 'foobar'
+
+logging.getLogger("factory").setLevel(logging.WARN)

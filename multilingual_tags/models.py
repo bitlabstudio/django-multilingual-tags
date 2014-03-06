@@ -3,7 +3,20 @@ from django.contrib.contenttypes import generic, models as ctype_models
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from hvad.models import TranslatableModel, TranslatedFields
+from hvad.models import TranslatableModel, TranslatedFields, TranslationManager
+
+
+class TagManager(TranslationManager):
+    """Manager for the `Tag` model."""
+
+    def get_for_obj(self, obj):
+        """Returns the tags for a specific object."""
+        qs = self.get_queryset()
+        qs = qs.filter(tagged_items__object_id=obj.id,
+                       tagged_items__content_type=
+                       ctype_models.ContentType.objects.get_for_model(
+                           obj.__class__))
+        return qs
 
 
 class Tag(TranslatableModel):
@@ -29,6 +42,8 @@ class Tag(TranslatableModel):
             max_length=64,
         ),
     )
+
+    objects = TagManager()
 
     def __unicode__(self):
         return self.safe_translation_getter('name', self.slug)

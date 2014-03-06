@@ -80,6 +80,15 @@ the model. One way to do it would be this:
     admin.site.register(SomeModel, SomeModelCustomAdmin)
 
 
+To get all the tags for an object, you can simply use the `TagManager`:
+
+.. code-block:: python
+
+    >> Tag.objects.get_for_obj(mymodel_instance)
+
+    [<Tag: mytag>, <Tag: myothertag>]
+
+
 Contribute
 ----------
 
