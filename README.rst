@@ -40,7 +40,7 @@ Don't forget to migrate your database
 Usage
 -----
 
-To add tags to a model, you have to add the `MultilingualTagsAdminMixin` to
+To add tags to a model, you have to add the ``MultilingualTagsAdminMixin`` to
 that model's admin. In your own apps, you can just do the following:
 
 .. code-block:: python
@@ -59,7 +59,7 @@ that model's admin. In your own apps, you can just do the following:
 This will render the inline admin form for adding tagged items.
 
 If you want to add tags to a third party app, you might need to import its
-admin instead of Django's `ModelAdmin` and then unregister and re-register the
+admin instead of Django's ``ModelAdmin`` and then unregister and re-register the
 model.
 
 .. code-block:: python
