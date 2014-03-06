@@ -1,12 +1,21 @@
 """Settings that need to be set in order to run the tests."""
 import os
 
+gettext = lambda s: s
+
 DEBUG = True
 
 SITE_ID = 1
 
 APP_ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..'))
+
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = [
+    ('en', gettext('English')),
+    ('de', gettext('German')),
+]
 
 
 DATABASES = {
@@ -47,6 +56,7 @@ EXTERNAL_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django_nose',
+    'hvad',
 ]
 
 INTERNAL_APPS = [
