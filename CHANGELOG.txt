@@ -1,5 +1,8 @@
 === (ongoing) ===
 
+
+=== 0.3 ===
+
 - added TagManager
 
 === 0.2 ===
