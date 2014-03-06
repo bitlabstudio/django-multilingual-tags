@@ -45,8 +45,12 @@ dev_requires = [
 
 install_requires = [
     'django',
-    'django-hvad',
     'south',
+]
+
+dependency_links = [
+    # needs this dev version for django 1.6 fixes
+    'https://github.com/KristianOellegaard/django-hvad/tarball/0e2101f15404eaf9611cd6cf843bfc424117b227',  # NOQA
 ]
 
 
@@ -63,13 +67,14 @@ setup(
     long_description=read('README.rst'),
     license='The MIT License',
     platforms=['OS Independent'],
-    keywords='django, app, reusable, translatable, tags, tagging, tag, multilingual',
+    keywords='django, app, reusable, translatable, tags, tagging, tag, multilingual',  # NOQA
     author='Daniel Kaufhold',
     author_email='daniel.kaufhold@bitmazk.com',
     url="https://github.com/bitmazk/django-multilingual-tags",
     packages=find_packages(),
     include_package_data=True,
     install_requires=install_requires,
+    dependency_links=dependency_links,
     extras_require={
         'dev': dev_requires,
     },
