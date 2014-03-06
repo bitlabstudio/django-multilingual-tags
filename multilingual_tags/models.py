@@ -55,3 +55,6 @@ class TaggedItem(models.Model):
 
     def __unicode__(self):
         return '{0}: #{1}'.format(self.object, self.tag)
+
+    class Meta:
+        unique_together = ('content_type', 'object_id', 'tag')
