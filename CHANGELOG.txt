@@ -1,5 +1,8 @@
 === (ongoing) ===
 
+
+=== 0.2 ===
+
 - simplifications
 
 === 0.1 ===
