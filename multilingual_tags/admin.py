@@ -33,19 +33,5 @@ class TaggedItemInline(GenericTabularInline):
     extra = 1
 
 
-class MultilingualTagsAdminMixin(object):
-    """
-    Mixin to provide a editing options for `Tag` items in the respective
-    admin, this mixin is used in.
-
-    """
-    def get_inline_instances(self, request, obj=None):
-        inline_instances = super(
-            MultilingualTagsAdminMixin, self).get_inline_instances(
-            request, obj)
-        inline_instances.append(TaggedItemInline(self.model, self.admin_site))
-        return inline_instances
-
-
 admin.site.register(models.Tag, TranslatableAdmin)
 admin.site.register(models.TaggedItem)

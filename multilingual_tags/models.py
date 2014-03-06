@@ -49,7 +49,10 @@ class TaggedItem(models.Model):
         related_name='tagged_items',
     )
 
-    content_type = models.ForeignKey(ctype_models.ContentType)
+    content_type = models.ForeignKey(
+        ctype_models.ContentType,
+        related_name='tagged_items',
+    )
     object_id = models.PositiveIntegerField()
     object = generic.GenericForeignKey('content_type', 'object_id')
 

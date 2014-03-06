@@ -40,7 +40,7 @@ Don't forget to migrate your database
 Usage
 -----
 
-To add tags to a model, you have to add the ``MultilingualTagsAdminMixin`` to
+To add tags to a model, you have to add the ``TaggedItemInline`` to
 that model's admin. In your own apps, you can just do the following:
 
 .. code-block:: python
@@ -51,28 +51,30 @@ that model's admin. In your own apps, you can just do the following:
 
     from my_app import models
 
-    class MyModelAdmin(MultilingualTagsAdminMixin, admin.ModelAdmin):
-        pass
+    class MyModelAdmin(admin.ModelAdmin):
+        inlines = [TaggedItemInline]
 
     admin.site.register(models.MyModel, MyModelAdmin)
 
 This will render the inline admin form for adding tagged items.
 
 If you want to add tags to a third party app, you might need to import its
-admin instead of Django's ``ModelAdmin`` and then unregister and re-register the
-model.
+admin instead of Django's ``ModelAdmin`` and then unregister and re-register
+the model. One way to do it would be this:
 
 .. code-block:: python
 
     from django.contrib import admin
 
-    from multilingual_tags.admin import MultilingualTagsAdminMixin
+    from multilingual_tags.admin import TaggedItemInline
 
     from other_app.admin import SomeModelAdmin
     from other_app.models import SomeModel
 
-    class SomeModelCustomAdmin(MultilingualTagsAdminMixin, SomeModelAdmin):
-        pass
+    class SomeModelCustomAdmin(SomeModelAdmin):
+        # be careful, if the other admin also defines admins, you need to add
+        # them as well
+        inlines = SomeModelAdmin.inlines + [TaggedItemInline]
 
     admin.site.unregister(SomeModel)
     admin.site.register(SomeModel, SomeModelCustomAdmin)
