@@ -84,9 +84,16 @@ To get all the tags for an object, you can simply use the `TagManager`:
 
 .. code-block:: python
 
+    # Get all tags for a certain model instance
     >> Tag.objects.get_for_obj(mymodel_instance)
 
     [<Tag: mytag>, <Tag: myothertag>]
+
+    # .. or get all tags for an entire queryset
+    >> Tag.objects.get_for_queryset(MyModel.objects.all())
+
+    [<Tag: mytag>, <Tag: myothertag>]
+
 
 
 Contribute

@@ -1,6 +1,8 @@
 === (ongoing) ===
 
 
+- updated TagManager with get_for_queryset method
+
 === 0.3 ===
 
 - added TagManager

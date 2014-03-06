@@ -18,6 +18,19 @@ class TagManager(TranslationManager):
                            obj.__class__))
         return qs
 
+    def get_for_queryset(self, obj_queryset):
+        """Returns all tags for a whole queryset of objects."""
+        qs = self.get_queryset()
+        if obj_queryset.count() == 0:
+            return qs.none()
+        qs = qs.filter(
+            tagged_items__object_id__in=[
+                obj.id for obj in obj_queryset],
+            tagged_items__content_type=
+            ctype_models.ContentType.objects.get_for_model(
+                obj_queryset[0].__class__))
+        return qs.distinct()
+
 
 class Tag(TranslatableModel):
     """
