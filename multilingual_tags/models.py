@@ -1,7 +1,7 @@
 """Models for the `multilingual_tags` app."""
 from django.contrib.contenttypes import generic, models as ctype_models
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, get_language
 
 from hvad.models import TranslatableModel, TranslatedFields, TranslationManager
 
@@ -11,7 +11,7 @@ class TagManager(TranslationManager):
 
     def get_for_obj(self, obj):
         """Returns the tags for a specific object."""
-        qs = self.get_queryset()
+        qs = Tag.objects.language(get_language())
         qs = qs.filter(tagged_items__object_id=obj.id,
                        tagged_items__content_type=
                        ctype_models.ContentType.objects.get_for_model(
@@ -20,7 +20,7 @@ class TagManager(TranslationManager):
 
     def get_for_queryset(self, obj_queryset):
         """Returns all tags for a whole queryset of objects."""
-        qs = self.get_queryset()
+        qs = Tag.objects.language(get_language())
         if obj_queryset.count() == 0:
             return qs.none()
         qs = qs.filter(
