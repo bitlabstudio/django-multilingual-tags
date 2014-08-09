@@ -8,14 +8,19 @@ from hvad.models import TranslatableModel, TranslatedFields, TranslationManager
 
 class TagManager(TranslationManager):
     """Manager for the `Tag` model."""
+    def get_for_model(self, obj):
+        """Returns the tags for a specific model/content type."""
+        qs = Tag.objects.language(get_language())
+        qs = qs.filter(
+            tagged_items__content_type=ctype_models.ContentType.objects.get_for_model(obj))  # NOQA
+        return qs
 
     def get_for_obj(self, obj):
         """Returns the tags for a specific object."""
         qs = Tag.objects.language(get_language())
-        qs = qs.filter(tagged_items__object_id=obj.id,
-                       tagged_items__content_type=
-                       ctype_models.ContentType.objects.get_for_model(
-                           obj.__class__))
+        qs = qs.filter(
+            tagged_items__object_id=obj.id,
+            tagged_items__content_type=ctype_models.ContentType.objects.get_for_model(obj))  # NOQA
         return qs
 
     def get_for_queryset(self, obj_queryset):
@@ -26,9 +31,7 @@ class TagManager(TranslationManager):
         qs = qs.filter(
             tagged_items__object_id__in=[
                 obj.id for obj in obj_queryset],
-            tagged_items__content_type=
-            ctype_models.ContentType.objects.get_for_model(
-                obj_queryset[0].__class__))
+            tagged_items__content_type=ctype_models.ContentType.objects.get_for_model(obj_queryset[0]))  # NOQA
         return qs.distinct()
 
 

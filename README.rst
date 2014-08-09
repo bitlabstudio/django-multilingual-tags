@@ -40,6 +40,87 @@ Don't forget to migrate your database
 Usage
 -----
 
+Add a generic relation to the model, that you intend to tag.
+
+.. code-block:: python
+
+    from django.contrib.contenttypes import generic
+    from django.db import models
+
+
+    class UserProfile(models.Model):
+
+        # ...
+        # some other model stuff goes here
+        # ...
+
+        special_attributes = generic.GenericRelation(
+            'multilingual_tags.TaggedItem',
+        )
+
+
+Add the ``TaggingFormMixin`` to any of your modelforms of a model, you want to
+tag and configure the field with the settings dictionary.
+
+.. code-block:: python
+
+    from django import forms
+
+    from multilingual_tags.forms.mixins import TaggingFormMixin
+
+
+    class UserProfileForm(TaggingFormMixin, forms.ModelForm):
+
+        tag_field = {
+            # ``name`` is the name of the ``GenericRelation`` that was added to
+            # the model
+            'name': 'special_attributes',
+            'label': _('Special Attributes'),
+            'help_text': _('List any special attributes separated with comma.'),
+            'required': False,
+        }
+
+
+The form mixin will automatically add ``data-class="multilingual-tags-field"``
+to the form field. This allows you to easily add ``jquery-typeahead-tagging``
+to your field, which is included in this app.
+
+Simply add the static files from ``multilingual_tags`` to your template.
+
+.. code-block:: html
+
+    {% load static %}
+
+    {# Plain Bootstrap-like styles. #}
+    <link href="{% static "multilingual_tags/css/typeahead.tagging.css" %}" rel="stylesheet" media="screen">
+
+    {# You will also need jquery of course. #}
+    <script src="{% static "js/libs/jquery-1.9.1.js" %}"></script>
+
+    {# And then there's typeahead and the tagging plugin. #}
+    <script src="{% static "multilingual_tags/js/typeahead.bundle.min.js" %}"></script>
+    <script src="{% static "multilingual_tags/js/typeahead.tagging.js" %}"></script>
+
+
+Then you can initialize your tagging field like so:
+
+.. code-block:: javascript
+
+
+    // The source of the tags for autocompletion
+    var tagsource = ['Foo', 'Bar', 'Anoter Tag', 'Even more tags',
+                     'Such autocomplete', 'Many tags', 'Wow'];
+
+    // Turn the input into the tagging input
+    $('[data-class="multilingual-tags-field"').tagging(tagsource);
+
+
+Et voila! That should really be all there is.
+
+
+Admin
++++++
+
 To add tags to a model, you have to add the ``TaggedItemInline`` to
 that model's admin. In your own apps, you can just do the following:
 
@@ -47,7 +128,7 @@ that model's admin. In your own apps, you can just do the following:
 
     from django.contrib import admin
 
-    from multilingual_tags.admin import MultilingualTagsAdminMixin
+    from multilingual_tags.admin import TaggedItemInline
 
     from my_app import models
 

@@ -1,6 +1,9 @@
 === (ongoing) ===
 
 
+- Added the TaggingFormMixin
+- Added jquery-typeahead-tagging
+
 === 0.4 ===
 
 - updated TagManager with get_for_queryset method
