@@ -1,6 +1,8 @@
 === (ongoing) ===
 
 
+=== 0.5 ===
+
 - Added the TaggingFormMixin
 - Added jquery-typeahead-tagging
 
