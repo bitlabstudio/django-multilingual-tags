@@ -112,7 +112,7 @@ Then you can initialize your tagging field like so:
                      'Such autocomplete', 'Many tags', 'Wow'];
 
     // Turn the input into the tagging input
-    $('[data-class="multilingual-tags-field"').tagging(tagsource);
+    $('[data-class="multilingual-tags-field"]').tagging(tagsource);
 
 
 Et voila! That should really be all there is.
