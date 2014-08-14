@@ -51,11 +51,11 @@ class TaggingFormMixin(object):
                     tag=tag,
                     content_type=instance_ctype,
                     object_id=self.instance.id)
-                taggeditems.append(taggeditem.pk)
+                taggeditems.append(taggeditem)
             models.TaggedItem.objects.filter(
                 content_type=instance_ctype,
                 object_id=self.instance.id).exclude(
-                    pk__in=taggeditems).delete()
+                    pk__in=[ti.pk for ti in taggeditems]).delete()
             return taggeditems
         return clean_field
 

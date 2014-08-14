@@ -1,5 +1,6 @@
 === (ongoing) ===
 
+- Fixed tests
 
 === 0.5.1 ===
 
