@@ -1,5 +1,8 @@
 === (ongoing) ===
 
+
+=== 0.5.1 ===
+
 - Fixed clean methods for tags
 
 === 0.5 ===
