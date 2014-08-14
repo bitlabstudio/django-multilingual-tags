@@ -32,6 +32,8 @@ class TaggingFormMixin(object):
     def _get_tag_field_clean(self):
         def clean_field():
             data = self.data.get(self._get_tag_field_name())
+            if not data:
+                return []
             instance_ctype = ContentType.objects.get_for_model(self.instance)
             tag_data = [t.strip() for t in data.split(',')]
             taggeditems = []
@@ -54,6 +56,7 @@ class TaggingFormMixin(object):
                 content_type=instance_ctype,
                 object_id=self.instance.id).exclude(
                     pk__in=taggeditems).delete()
+            return taggeditems
         return clean_field
 
     def _get_tag_field_help_text(self):
