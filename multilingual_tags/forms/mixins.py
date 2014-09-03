@@ -18,6 +18,8 @@ class TaggingFormMixin(object):
 
     def __init__(self, *args, **kwargs):
         super(TaggingFormMixin, self).__init__(*args, **kwargs)
+        self._taggeditems = []
+        self._instance_ctype = None
         self.fields[self._get_tag_field_name()] = forms.CharField(
             label=self._get_tag_field_label(),
             help_text=self._get_tag_field_help_text(),
@@ -34,9 +36,11 @@ class TaggingFormMixin(object):
             data = self.data.get(self._get_tag_field_name())
             if not data:
                 return []
-            instance_ctype = ContentType.objects.get_for_model(self.instance)
+            self._instance_ctype = ContentType.objects.get_for_model(
+                self.instance)
+            self._tags_added = []
             tag_data = [t.strip() for t in data.split(',')]
-            taggeditems = []
+            self._taggeditems = []
             language = get_language()
             for tag_string in tag_data:
                 try:
@@ -47,16 +51,23 @@ class TaggingFormMixin(object):
                         slug=slugify(tag_string),
                         name=tag_string,
                         language_code=language)
-                taggeditem, created = models.TaggedItem.objects.get_or_create(
-                    tag=tag,
-                    content_type=instance_ctype,
-                    object_id=self.instance.id)
-                taggeditems.append(taggeditem)
-            models.TaggedItem.objects.filter(
-                content_type=instance_ctype,
-                object_id=self.instance.id).exclude(
-                    pk__in=[ti.pk for ti in taggeditems]).delete()
-            return taggeditems
+                # prevent duplicate tags
+                if tag not in self._tags_added:
+                    self._tags_added.append(tag)
+                    if self.instance.id:
+                        taggeditem, created = (
+                            models.TaggedItem.objects.get_or_create(
+                                tag=tag,
+                                content_type=self._instance_ctype,
+                                object_id=self.instance.id,
+                            )
+                        )
+                    else:
+                        taggeditem = models.TaggedItem(
+                            tag=tag,
+                            content_type=self._instance_ctype)
+                    self._taggeditems.append(taggeditem)
+            return self._taggeditems
         return clean_field
 
     def _get_tag_field_help_text(self):
@@ -74,3 +85,14 @@ class TaggingFormMixin(object):
 
     def _get_tag_field_required(self):
         return self.tag_field.get('required', True)
+
+    def save(self, commit=True):
+        instance = super(TaggingFormMixin, self).save(commit)
+        for item in self._taggeditems:
+            item.object_id=instance.id
+            item.save()
+        models.TaggedItem.objects.filter(
+            content_type=self._instance_ctype,
+            object_id=self.instance.id).exclude(
+            pk__in=[ti.pk for ti in self._taggeditems]).delete()
+        return instance

@@ -1,5 +1,6 @@
 === (ongoing) ===
 
+- made TaggingFormMixin work with create forms
 
 === 0.5.2 ===
 
