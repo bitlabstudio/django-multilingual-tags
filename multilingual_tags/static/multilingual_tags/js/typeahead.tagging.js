@@ -30,6 +30,7 @@
 
         $.tagging.current_taglist = [];
         $.tagging.original_input = this;
+        $.tagging.max_tags = parseInt($(this).attr('data-max-tags'));
 
         // hide the original input
         $.tagging.original_input.hide();
@@ -50,12 +51,18 @@
         // create a new tag from the input's value and insert it before the
         // input's parent li
         var $new_tag = $.tagging.$TAGGING_TAG.clone()
-          , value = $input.val().replace($.tagging.CLEANING_PATTERN, '').trim();
+          , value = $input.val().replace($.tagging.CLEANING_PATTERN, '').trim()
+          , limit_exceeded = false;
 
-        $new_tag.html(value + $.tagging.TAG_DELETE);
-        $new_tag.insertBefore($input.parents('li'));
-        $.tagging.current_taglist.push(value);
+        if ($.tagging.max_tags && $.tagging.max_tags <= $.tagging.current_taglist.length) {
+            limit_exceeded = true;
+        }
 
+        if (value && !limit_exceeded) {
+            $new_tag.html(value + $.tagging.TAG_DELETE);
+            $new_tag.insertBefore($input.parents('li'));
+            $.tagging.current_taglist.push(value);
+        }
         sync_input();
     }
 
@@ -63,7 +70,6 @@
         // append a new li to the tagging ul element with an input to add new
         // tags
         $element.append($tagging_new);
-/[^\w\s-]+/g
         // init typeahead
         init_typeahead($element.find('input.tagging_new_input'), tagsource,
                        datasetname);

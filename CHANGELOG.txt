@@ -1,6 +1,8 @@
 === (ongoing) ===
 
 
+- updated typeahead-tagging
+
 === 0.5.3 ===
 
 - made TaggingFormMixin work with create forms
