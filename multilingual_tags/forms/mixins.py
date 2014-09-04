@@ -14,6 +14,7 @@ class TaggingFormMixin(object):
         'label': _('Tags'),
         'help_text': _('Add tags separated by comma.'),
         'required': True,
+        'max_tags': 0,
     }
 
     def __init__(self, *args, **kwargs):
@@ -27,21 +28,24 @@ class TaggingFormMixin(object):
             required=self._get_tag_field_required(),
         )
         self.fields[self._get_tag_field_name()].widget.attrs.update({
-            'data-class': 'multilingual-tags-field'})
+            'data-class': 'multilingual-tags-field',
+            'data-max-tags': self._get_tag_field_max_tags()})
         setattr(self, 'clean_{0}'.format(self._get_tag_field_name()),
                 self._get_tag_field_clean())
 
     def _get_tag_field_clean(self):
         def clean_field():
+            self._tags_added = []
+            self._taggeditems = []
+            language = get_language()
+            max_tags = self._get_tag_field_max_tags()
+
             data = self.data.get(self._get_tag_field_name())
             if not data:
                 return []
+            tag_data = [t.strip() for t in data.split(',')]
             self._instance_ctype = ContentType.objects.get_for_model(
                 self.instance)
-            self._tags_added = []
-            tag_data = [t.strip() for t in data.split(',')]
-            self._taggeditems = []
-            language = get_language()
             for tag_string in tag_data:
                 try:
                     tag = models.Tag.objects.language(language).get(
@@ -67,6 +71,12 @@ class TaggingFormMixin(object):
                             tag=tag,
                             content_type=self._instance_ctype)
                     self._taggeditems.append(taggeditem)
+                if max_tags and len(self._tags_added) > max_tags:
+                    self._errors[self._get_tag_field_name()] = [
+                        _('You cannot add more than {0} tags.'.format(
+                            self._get_tag_field_max_tags()
+                        ))
+                    ]
             return self._taggeditems
         return clean_field
 
@@ -79,6 +89,9 @@ class TaggingFormMixin(object):
 
     def _get_tag_field_label(self):
         return self.tag_field.get('label', 'Tags')
+
+    def _get_tag_field_max_tags(self):
+        return int(self.tag_field.get('max_tags', 0))
 
     def _get_tag_field_name(self):
         return self.tag_field.get('name', 'tags')

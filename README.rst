@@ -60,7 +60,9 @@ Add a generic relation to the model, that you intend to tag.
 
 
 Add the ``TaggingFormMixin`` to any of your modelforms of a model, you want to
-tag and configure the field with the settings dictionary.
+tag and configure the field with the settings dictionary. ``allowed_tags``
+configures how many tags a user may add. If it's set to 0 (default), it means,
+that the input is not limited.
 
 .. code-block:: python
 
@@ -78,6 +80,7 @@ tag and configure the field with the settings dictionary.
             'label': _('Special Attributes'),
             'help_text': _('List any special attributes separated with comma.'),
             'required': False,
+            'max_tags': 0,
         }
 
 

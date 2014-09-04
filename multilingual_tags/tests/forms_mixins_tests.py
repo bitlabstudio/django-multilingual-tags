@@ -3,7 +3,7 @@ from django.test import TestCase
 
 from ..models import Tag, TaggedItem
 from .factories import DummyModelFactory
-from .test_app.forms import DummyModelForm
+from .test_app.forms import DummyModelForm, LimitedDummyModelForm
 from .test_app.models import DummyModel
 
 
@@ -30,3 +30,9 @@ class TaggingFormMixinTestCase(TestCase):
             'The form should create one TaggedItem per entered tag.'))
         self.assertEqual(Tag.objects.count(), 2, msg=(
             'The form should create one Tag per entered tag.'))
+
+        form = LimitedDummyModelForm(
+            data=self.data, instance=self.dummy)
+        self.assertFalse(form.is_valid(), msg=(
+            'The form should not be valid when there are too many tags.'
+        ))

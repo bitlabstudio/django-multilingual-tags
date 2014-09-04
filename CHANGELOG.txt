@@ -1,6 +1,7 @@
 === (ongoing) ===
 
 
+- allowing limiting the number of tags
 - updated typeahead-tagging
 
 === 0.5.3 ===
