@@ -10,6 +10,8 @@ class DummyModelForm(TaggingFormMixin, forms.ModelForm):
 
     class Meta:
         model = DummyModel
+        fields = ('charfield', )
+
 
 class LimitedDummyModelForm(TaggingFormMixin, forms.ModelForm):
 
@@ -23,3 +25,4 @@ class LimitedDummyModelForm(TaggingFormMixin, forms.ModelForm):
 
     class Meta:
         model = DummyModel
+        fields = ('charfield', )

@@ -39,6 +39,9 @@ class TaggingFormMixin(object):
             self._taggeditems = []
             language = get_language()
             max_tags = self._get_tag_field_max_tags()
+            user = None
+            if hasattr(self.instance, 'get_user'):
+                user = self.instance.get_user()
 
             data = self.data.get(self._get_tag_field_name())
             if not data:
@@ -64,12 +67,14 @@ class TaggingFormMixin(object):
                                 tag=tag,
                                 content_type=self._instance_ctype,
                                 object_id=self.instance.id,
+                                user=user,
                             )
                         )
                     else:
                         taggeditem = models.TaggedItem(
                             tag=tag,
-                            content_type=self._instance_ctype)
+                            content_type=self._instance_ctype,
+                            user=user)
                     self._taggeditems.append(taggeditem)
                 if max_tags and len(self._tags_added) > max_tags:
                     self._errors[self._get_tag_field_name()] = [
@@ -102,7 +107,7 @@ class TaggingFormMixin(object):
     def save(self, commit=True):
         instance = super(TaggingFormMixin, self).save(commit)
         for item in self._taggeditems:
-            item.object_id=instance.id
+            item.object_id = instance.id
             item.save()
         models.TaggedItem.objects.filter(
             content_type=self._instance_ctype,

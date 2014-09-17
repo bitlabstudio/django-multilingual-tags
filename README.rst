@@ -121,6 +121,24 @@ Then you can initialize your tagging field like so:
 Et voila! That should really be all there is.
 
 
+Storing the user
+++++++++++++++++
+
+For easier access later on, you can store the user, that the tagged item belongs
+to on the ``TaggedItem`` itself. The form mixin will check if the instance of
+the ``ModelForm`` you use it with has a ``get_user`` method for that matter.
+
+.. code-block:: python
+
+    class MyObject(models.Model):
+
+        # here goes my model implementation
+
+        def get_user(self):
+            """Here I can return the user I want on the TaggedItem"""
+            return self.user
+
+
 Admin
 +++++
 

@@ -31,6 +31,10 @@ class TaggingFormMixinTestCase(TestCase):
         self.assertEqual(Tag.objects.count(), 2, msg=(
             'The form should create one Tag per entered tag.'))
 
+        self.assertEqual(
+            TaggedItem.objects.all()[0].user, self.dummy.user,
+            msg='The form should have added the user to the taggeditems.')
+
         form = LimitedDummyModelForm(
             data=self.data, instance=self.dummy)
         self.assertFalse(form.is_valid(), msg=(

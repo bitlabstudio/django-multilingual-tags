@@ -87,6 +87,13 @@ class TaggedItem(models.Model):
     object_id = models.PositiveIntegerField()
     object = generic.GenericForeignKey('content_type', 'object_id')
 
+    user = models.ForeignKey(
+        'auth.User',
+        verbose_name=_('user'),
+        related_name='tagged_items',
+        blank=True, null=True,
+    )
+
     def __unicode__(self):
         return u'{0}: #{1}'.format(self.object, self.tag)
 

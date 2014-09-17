@@ -1,6 +1,7 @@
 """Factories for the multilingual_tags app."""
 from django.conf import settings
-from django_libs.tests.factories import HvadFactoryMixin
+
+from django_libs.tests.factories import HvadFactoryMixin, UserFactory
 
 import factory
 
@@ -13,6 +14,7 @@ class DummyModelFactory(factory.DjangoModelFactory):
     FACTORY_FOR = DummyModel
 
     charfield = factory.Sequence(lambda n: 'charfield {0}'.format(n))
+    user = factory.SubFactory(UserFactory)
 
 
 class TagFactory(HvadFactoryMixin, factory.DjangoModelFactory):
