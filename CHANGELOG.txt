@@ -1,6 +1,8 @@
 === (ongoing) ===
 
 
+=== 0.7 ===
+
 - Added possibility to store the user on a TaggedItem
 
 === 0.6 ===
