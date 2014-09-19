@@ -1,6 +1,8 @@
 === (ongoing) ===
 
 
+- updated version of jquery-typeahead-tagging
+
 === 0.7 ===
 
 - Added possibility to store the user on a TaggedItem
