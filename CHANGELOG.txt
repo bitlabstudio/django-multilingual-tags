@@ -1,6 +1,8 @@
 === (ongoing) ===
 
 
+=== 0.8 ===
+
 - updated version of jquery-typeahead-tagging
 
 === 0.7 ===
