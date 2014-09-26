@@ -1,5 +1,6 @@
 === (ongoing) ===
 
+- Calling get_user in save instead of clean to have a saved instance
 
 === 0.8 ===
 
