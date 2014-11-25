@@ -371,6 +371,13 @@ TypeaheadTaggingPlugin.prototype.set_taglist = function (taglist) {
     // saves an array of tag strings as value on the original input
 
     this.element.value = taglist.join();
+    if ('createEvent' in document) {
+        var evt = document.createEvent('HTMLEvents');
+        evt.initEvent('change', false, true);
+        this.element.dispatchEvent(evt);
+    } else {
+        this.element.fireEvent('onchange');
+    }
 
 };
 
