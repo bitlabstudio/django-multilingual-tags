@@ -1,9 +1,6 @@
-=== (ongoing) ===
+=== ongoing 0.8.X - to be released as 0.9 ===
 
 - added latest dev version of jquery-typeahead-tagging
-
-=== 0.8.1 ===
-
 - Calling get_user in save instead of clean to have a saved instance
 
 === 0.8 ===
