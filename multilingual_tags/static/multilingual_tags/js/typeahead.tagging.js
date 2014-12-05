@@ -70,7 +70,7 @@ function TypeaheadTaggingPlugin(element) {
 
 }
 
-TypeaheadTaggingPlugin.prototype.add_tag = function (value) {
+TypeaheadTaggingPlugin.prototype.add_tag = function (value, mute) {
 
     // adds the tag to the value and creates a new tag element
 
@@ -85,6 +85,10 @@ TypeaheadTaggingPlugin.prototype.add_tag = function (value) {
     }
 
     jQuery(this.input).typeahead('val', '');
+
+    if (mute !==  true) {
+        this.fire_change_event();
+    }
 
 };
 
@@ -127,6 +131,7 @@ TypeaheadTaggingPlugin.prototype.append_li = function (value) {
     li.textContent = value;
     li.classList.add('tagging_li');
     li.setAttribute('data-value', value);
+    li.setAttribute('data-class', 'tagging_tag');
     // append it to the list
     if (this.input !== undefined) {
         tagging_li_new = this.element.parentElement.querySelector('[data-class="tagging_li_new"]');
@@ -154,6 +159,21 @@ TypeaheadTaggingPlugin.prototype.clean_value = function (value) {
 
     return value.replace(this.cleaning_pattern, '');
 
+};
+
+
+TypeaheadTaggingPlugin.prototype.clear_tags = function (mute) {
+
+    // removes all tags and sets the input value to ''
+    var tag_li = this.ul.querySelector('[data-class="tagging_tag"]');
+    while (tag_li) {
+        tag_li.remove();
+        tag_li = this.ul.querySelector('[data-class="tagging_tag"]');
+    }
+    this.element.value = '';
+    if (mute !==  true) {
+        this.fire_change_event();
+    }
 };
 
 TypeaheadTaggingPlugin.prototype.create_li_with_input = function () {
@@ -185,6 +205,8 @@ TypeaheadTaggingPlugin.prototype.create_tags = function () {
 
     taglist = this.get_taglist();
 
+    this.ul.innerHTML = '';
+
     for (var i = 0; i < taglist.length; i++) {
         this.append_li(taglist[i]);
     }
@@ -212,6 +234,9 @@ TypeaheadTaggingPlugin.prototype.delete_from_value = function (value) {
     var taglist, // the list of tag strings
         index;   // the index of the value inside the taglist
 
+    if (!value) {
+        return false;
+    }
     taglist = this.get_taglist();
     index = taglist.indexOf(value);
     if (index !== -1) {
@@ -219,13 +244,31 @@ TypeaheadTaggingPlugin.prototype.delete_from_value = function (value) {
     }
     this.set_taglist(taglist);
 
+    return true;
+
 };
 
-TypeaheadTaggingPlugin.prototype.delete_tag = function (value) {
+TypeaheadTaggingPlugin.prototype.delete_tag = function (value, mute) {
 
     // removes the tag and the value from the original input
-    this.delete_from_value(value);
-    this.element.parentElement.querySelector('[data-value="' + value + '"]').remove();
+    if (this.delete_from_value(value)) {
+        this.element.parentElement.querySelector('[data-value="' + value + '"]').remove();
+    }
+    if (mute !==  true) {
+        this.fire_change_event();
+    }
+
+};
+
+TypeaheadTaggingPlugin.prototype.fire_change_event = function () {
+
+    if ('createEvent' in document) {
+        var evt = document.createEvent('HTMLEvents');
+        evt.initEvent('change', false, true);
+        this.element.dispatchEvent(evt);
+    } else {
+        this.element.fireEvent('onchange');
+    }
 
 };
 
@@ -258,7 +301,7 @@ TypeaheadTaggingPlugin.prototype.handle_click_delete = function () {
     var that = this;
 
 
-    handler = function (e) {
+    handler = function () {
         var value;  // the value of the tag, that should be deleted
         value = this.parentNode.getAttribute('data-value');
         that.delete_tag(value);
@@ -371,13 +414,18 @@ TypeaheadTaggingPlugin.prototype.set_taglist = function (taglist) {
     // saves an array of tag strings as value on the original input
 
     this.element.value = taglist.join();
-    if ('createEvent' in document) {
-        var evt = document.createEvent('HTMLEvents');
-        evt.initEvent('change', false, true);
-        this.element.dispatchEvent(evt);
-    } else {
-        this.element.fireEvent('onchange');
+
+};
+
+TypeaheadTaggingPlugin.prototype.set_value = function (taglist) {
+
+    // takes an array of strings as an input and replaces the value and all tags with it
+    this.clear_tags(true);
+    for (var i = 0; i < taglist.length; i++) {
+        this.add_tag(taglist[i], true);
     }
+    // we muted the change event so far and fire it now only once
+    this.fire_change_event();
 
 };
 
@@ -419,30 +467,34 @@ TypeaheadTaggingPlugin.prototype.substringMatcher = function (tagsource) {
 };
 
 (function ($) {
-    $.fn.tagging = function (tagsource) {
-        var plugins = [];
-        if (tagsource) {
-            return this.each(function () {
-
-                var plugin;     // the plugin instance
-
-                plugin = new TypeaheadTaggingPlugin(this);
-                $.data(this, 'plugin_tagging', plugin);
-                plugin.init(tagsource);
+    $.fn.tagging = function (arg, arg2) {
+        var plugin,     // the plugin instance
+            plugin_name = 'plugin_tagging';
+        if (arg) {
+            if ($.isArray(arg)) {
+                return this.each(function () {
+                    plugin = $.data(this, plugin_name);
+                    if (typeof plugin === 'undefined') {
+                        plugin = new TypeaheadTaggingPlugin(this);
+                        $.data(this, plugin_name, plugin);
+                        plugin.init(arg);
+                    }
+                    return plugin;
+                });
+            } else if (arg === 'clear') {
+                plugin = $.data(this[0], plugin_name);
+                return plugin.clear_tags();
+            } else if (arg === 'value' && typeof arg2 === 'undefined') {
+                plugin = $.data(this[0], plugin_name);
+                return plugin.get_taglist();
+            } else if (arg === 'value' && typeof $.isArray(arg2)) {
+                plugin = $.data(this[0], plugin_name);
+                plugin.set_value(arg2);
                 return plugin;
-
-            });
-        } else {
-            // if the plugin is called without tag source, return the plugin itself
-            this.each(function () {
-                plugins.push($.data(this, 'plugin_tagging'));
-            });
-            if (plugins.length === 1) {
-                return plugins[0];
-            } else {
-                return plugins;
             }
+        } else {
+            // if the plugin is called without tag source, return the plugins itself
+            return $.data(this[0], plugin_name);
         }
     };
-
 })(jQuery);

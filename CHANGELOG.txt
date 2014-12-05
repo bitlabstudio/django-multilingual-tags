@@ -1,5 +1,7 @@
 === (ongoing) ===
 
+- added latest dev version of jquery-typeahead-tagging
+
 === 0.8.1 ===
 
 - Calling get_user in save instead of clean to have a saved instance
