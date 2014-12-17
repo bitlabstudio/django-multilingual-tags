@@ -131,6 +131,7 @@ TypeaheadTaggingPlugin.prototype.append_li = function (value) {
     li.textContent = value;
     li.classList.add('tagging_li');
     li.setAttribute('data-value', value);
+    li.setAttribute('title', value);
     li.setAttribute('data-class', 'tagging_tag');
     // append it to the list
     if (this.input !== undefined) {
@@ -139,14 +140,15 @@ TypeaheadTaggingPlugin.prototype.append_li = function (value) {
     } else {
         this.ul.appendChild(li);
     }
-    var i = 0;
-    if (li.offsetWidth > (this.ul.offsetWidth - 35)) {
-        while (li.offsetWidth > (this.ul.offsetWidth - 35) && i < 100) {
-            i += 1;
-            li.textContent = li.textContent.slice(0, li.textContent.length - 4) + '...';
-        }
-        li.style.width = '100%';
-    }
+    // TODO this caused problems on load, where the first tag always expanded throught the entire input
+    //var i = 0;
+    //if (li.offsetWidth > (this.ul.offsetWidth - 35)) {
+    //    while (li.offsetWidth > (this.ul.offsetWidth - 35) && i < 100) {
+    //        i += 1;
+    //        li.textContent = li.textContent.slice(0, li.textContent.length - 4) + '...';
+    //    }
+    //    li.style.width = '100%';
+    //}
     li.appendChild(span);
     // assign click event to span, that should remove the tag
     span.onclick = this.handle_click_delete();
