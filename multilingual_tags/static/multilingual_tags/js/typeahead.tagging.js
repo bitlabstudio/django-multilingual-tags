@@ -232,7 +232,7 @@ TypeaheadTaggingPlugin.prototype.create_ul = function () {
 
 TypeaheadTaggingPlugin.prototype.delete_from_value = function (value) {
 
-    // removes a tag from the original input's value
+    // removes a string from the original input's value
     var taglist, // the list of tag strings
         index;   // the index of the value inside the taglist
 
@@ -252,7 +252,7 @@ TypeaheadTaggingPlugin.prototype.delete_from_value = function (value) {
 
 TypeaheadTaggingPlugin.prototype.delete_tag = function (value, mute) {
 
-    // removes the tag and the value from the original input
+    // removes the tag and the value string from the original input
     if (this.delete_from_value(value)) {
         this.element.parentElement.querySelector('[data-value="' + value + '"]').remove();
     }
@@ -271,6 +271,7 @@ TypeaheadTaggingPlugin.prototype.fire_change_event = function () {
     } else {
         this.element.fireEvent('onchange');
     }
+    $(this.element).change();
 
 };
 
