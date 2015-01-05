@@ -2,6 +2,7 @@
 from django.contrib.contenttypes import generic, models as ctype_models
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, get_language
+from django.conf import settings
 
 from hvad.models import TranslatableModel, TranslatedFields, TranslationManager
 
@@ -88,7 +89,7 @@ class TaggedItem(models.Model):
     object = generic.GenericForeignKey('content_type', 'object_id')
 
     user = models.ForeignKey(
-        'auth.User',
+        settings.AUTH_USER_MODEL,
         verbose_name=_('user'),
         related_name='tagged_items',
         blank=True, null=True,
