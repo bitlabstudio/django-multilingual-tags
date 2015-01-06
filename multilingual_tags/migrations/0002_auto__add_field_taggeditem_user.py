@@ -4,13 +4,27 @@ from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:  # Django < 1.5
+    from django.contrib.auth.models import User
+else:
+    User = get_user_model()
+
+
+USER_MODEL = {
+    'orm_label': '%s.%s' % (User._meta.app_label, User._meta.object_name),
+    'model_label': '%s.%s' % (User._meta.app_label, User._meta.module_name),
+    'object_name': User.__name__,
+}
+
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
         # Adding field 'TaggedItem.user'
         db.add_column(u'multilingual_tags_taggeditem', 'user',
-                      self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='tagged_items', null=True, to=orm['auth.User']),
+                      self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='tagged_items', null=True, to=orm[USER_MODEL['orm_label']]),
                       keep_default=False)
 
 
@@ -33,7 +47,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
-        u'auth.user': {
+        USER_MODEL['model_label']: {
             'Meta': {'object_name': 'User'},
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
@@ -67,7 +81,7 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'object_id': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'tagged_items'", 'to': u"orm['multilingual_tags.Tag']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'tagged_items'", 'null': 'True', 'to': u"orm['auth.User']"})
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'tagged_items'", 'null': 'True', 'to': u"orm['%s']" % USER_MODEL['orm_label']})
         },
         u'multilingual_tags.tagtranslation': {
             'Meta': {'unique_together': "[('language_code', 'master')]", 'object_name': 'TagTranslation', 'db_table': "u'multilingual_tags_tag_translation'"},
