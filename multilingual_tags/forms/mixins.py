@@ -58,7 +58,7 @@ class TaggingFormMixin(object):
                 if len(tag_string) > 64:
                     self.add_error(
                         self._get_tag_field_name(),
-                        _('Tags may not be longer than 64 characters:'
+                        _('Tags cannot be longer than 64 characters:'
                           ' "{0}"'.format(tag_string))
                     )
                     continue
