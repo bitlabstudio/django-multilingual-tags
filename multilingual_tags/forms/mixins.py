@@ -1,5 +1,6 @@
 """Form mixins for the ``multilingual_tags`` app."""
 from django import forms
+from django.forms.fields import ErrorList
 from django.contrib.contenttypes.models import ContentType
 from django.utils.text import slugify
 from django.utils.translation import get_language, ugettext_lazy as _
@@ -33,13 +34,19 @@ class TaggingFormMixin(object):
         setattr(self, 'clean_{0}'.format(self._get_tag_field_name()),
                 self._get_tag_field_clean())
 
+    def add_error(self, fieldname, message):
+        if fieldname in self._errors:
+            self._errors[fieldname].append(message)
+        else:
+            self._errors[fieldname] = ErrorList()
+            self._errors[fieldname].append(message)
+
     def _get_tag_field_clean(self):
         def clean_field():
             self._tags_added = []
             self._taggeditems = []
             language = get_language()
             max_tags = self._get_tag_field_max_tags()
-            user = None
 
             data = self.data.get(self._get_tag_field_name())
             if not data:
@@ -48,6 +55,13 @@ class TaggingFormMixin(object):
             self._instance_ctype = ContentType.objects.get_for_model(
                 self.instance)
             for tag_string in tag_data:
+                if len(tag_string) > 64:
+                    self.add_error(
+                        self._get_tag_field_name(),
+                        _('Tags may not be longer than 64 characters:'
+                          ' "{0}"'.format(tag_string))
+                    )
+                    continue
                 try:
                     tag = models.Tag.objects.language(language).get(
                         slug=slugify(tag_string))
@@ -73,11 +87,12 @@ class TaggingFormMixin(object):
                             content_type=self._instance_ctype)
                     self._taggeditems.append(taggeditem)
                 if max_tags and len(self._tags_added) > max_tags:
-                    self._errors[self._get_tag_field_name()] = [
+                    self.add_error(
+                        self._get_tag_field_name(),
                         _('You cannot add more than {0} tags.'.format(
                             self._get_tag_field_max_tags()
                         ))
-                    ]
+                    )
             return self._taggeditems
         return clean_field
 

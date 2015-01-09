@@ -1,5 +1,6 @@
 === ongoing 0.8.X - to be released as 0.9 ===
 
+- added validation for tag name length
 - prepared app for custom user models
 - added latest dev version of jquery-typeahead-tagging
 - Calling get_user in save instead of clean to have a saved instance
