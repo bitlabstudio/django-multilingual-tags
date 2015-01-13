@@ -77,7 +77,7 @@ TypeaheadTaggingPlugin.prototype.add_tag = function (value, mute) {
     value = this.clean_value(value);
 
     if (!value) {
-        return;
+        return
     }
 
     if (this.add_to_value(value)) {
@@ -271,7 +271,6 @@ TypeaheadTaggingPlugin.prototype.fire_change_event = function () {
     } else {
         this.element.fireEvent('onchange');
     }
-    $(this.element).change();
 
 };
 
