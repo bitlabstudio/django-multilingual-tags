@@ -63,9 +63,10 @@ class TaggingFormMixin(object):
                     )
                     continue
                 try:
-                    tag = models.Tag.objects.language(language).get(
+                    tag = models.Tag.objects.get(
                         slug=slugify(tag_string))
                 except models.Tag.DoesNotExist:
+                    # TODO tags should not be stored directly
                     tag = models.Tag.objects.create(
                         slug=slugify(tag_string),
                         name=tag_string,
