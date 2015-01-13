@@ -1,5 +1,6 @@
 === ongoing 0.8.X - to be released as 0.9 ===
 
+- fixing call for distinct in TagManager
 - fixing tags being incorrectly queried and then accidentally duplicated
 - added validation for tag name length
 - prepared app for custom user models

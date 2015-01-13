@@ -14,7 +14,7 @@ class TagManager(TranslationManager):
         qs = Tag.objects.language(get_language())
         qs = qs.filter(
             tagged_items__content_type=ctype_models.ContentType.objects.get_for_model(obj))  # NOQA
-        return qs
+        return qs.distinct()
 
     def get_for_obj(self, obj):
         """Returns the tags for a specific object."""
@@ -22,7 +22,7 @@ class TagManager(TranslationManager):
         qs = qs.filter(
             tagged_items__object_id=obj.id,
             tagged_items__content_type=ctype_models.ContentType.objects.get_for_model(obj))  # NOQA
-        return qs
+        return qs.distinct()
 
     def get_for_queryset(self, obj_queryset):
         """Returns all tags for a whole queryset of objects."""
