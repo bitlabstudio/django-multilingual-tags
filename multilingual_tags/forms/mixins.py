@@ -1,6 +1,6 @@
 """Form mixins for the ``multilingual_tags`` app."""
 from django import forms
-from django.forms.fields import ErrorList
+from django.forms.utils import ErrorList
 from django.contrib.contenttypes.models import ContentType
 from django.utils.text import slugify
 from django.utils.translation import get_language, ugettext_lazy as _

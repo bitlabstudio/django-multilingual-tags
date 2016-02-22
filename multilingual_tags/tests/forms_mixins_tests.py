@@ -1,8 +1,9 @@
 """Tests for the form mixins of the ``multilingual_tags`` app."""
 from django.test import TestCase
 
+from mixer.backend.django import mixer
+
 from ..models import Tag, TaggedItem
-from .factories import DummyModelFactory
 from .test_app.forms import DummyModelForm, LimitedDummyModelForm
 from .test_app.models import DummyModel
 
@@ -12,7 +13,7 @@ class TaggingFormMixinTestCase(TestCase):
     longMessage = True
 
     def setUp(self):
-        self.dummy = DummyModelFactory()
+        self.dummy = mixer.blend('test_app.DummyModel')
         self.data = {
             'charfield': u'foobar',
             'tags': u'tagging, test'

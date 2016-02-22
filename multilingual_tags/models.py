@@ -1,5 +1,5 @@
 """Models for the `multilingual_tags` app."""
-from django.contrib.contenttypes import generic, models as ctype_models
+from django.contrib.contenttypes import fields, models as ctype_models
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.conf import settings
@@ -86,7 +86,7 @@ class TaggedItem(models.Model):
         related_name='tagged_items',
     )
     object_id = models.PositiveIntegerField()
-    object = generic.GenericForeignKey('content_type', 'object_id')
+    object = fields.GenericForeignKey('content_type', 'object_id')
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

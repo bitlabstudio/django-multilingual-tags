@@ -1,12 +1,12 @@
 """Tests for the models of the multilingual_tags app."""
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 
-from .test_app.models import DummyModel
-from django_libs.tests.factories import UserFactory
+from mixer.backend.django import mixer
 
-from . import factories
 from .. import models
+from .test_app.models import DummyModel
 
 
 class DummyModelTestCase(TestCase):
@@ -15,7 +15,7 @@ class DummyModelTestCase(TestCase):
 
     def test_instantiation(self):
         """Test instantiation of the ``DummyModel`` model."""
-        dummymodel = factories.DummyModelFactory()
+        dummymodel = mixer.blend('test_app.DummyModel')
         self.assertTrue(dummymodel.pk)
 
 
@@ -25,7 +25,7 @@ class TagTestCase(TestCase):
 
     def test_instantiation(self):
         """Test instantiation of the ``Tag`` model."""
-        tag = factories.TagFactory()
+        tag = mixer.blend('multilingual_tags.TagTranslation')
         self.assertTrue(tag.pk)
 
 
@@ -35,7 +35,14 @@ class TaggedItemTestCase(TestCase):
 
     def test_instantiation(self):
         """Test instantiation of the ``TaggedItem`` model."""
-        taggeditem = factories.TaggedItemFactory()
+        self.dummy = mixer.blend('test_app.DummyModel')
+        self.tag = mixer.blend('multilingual_tags.TagTranslation',
+                               language_code='en').master
+        taggeditem = mixer.blend(
+            'multilingual_tags.TaggedItem',
+            tag=self.tag,
+            content_type=ContentType.objects.get_for_model(DummyModel),
+            object_id=self.dummy.pk)
         self.assertTrue(taggeditem.pk)
 
 
@@ -44,14 +51,20 @@ class TagManagerTestCase(TestCase):
     longMessage = True
 
     def setUp(self):
-        self.tagged_item = factories.TaggedItemFactory()
-        self.dummy = self.tagged_item.object
-        self.tag = self.tagged_item.tag
-        self.other_tagged_item = factories.TaggedItemFactory(object=self.dummy)
+        self.dummy = mixer.blend('test_app.DummyModel')
+        self.tag = mixer.blend('multilingual_tags.TagTranslation',
+                               language_code='en').master
+        mixer.blend(
+            'multilingual_tags.TaggedItem',
+            tag=self.tag,
+            content_type=ContentType.objects.get_for_model(DummyModel),
+            object_id=self.dummy.pk)
 
-        factories.TaggedItemFactory()
-
-        self.user_item = factories.TaggedItemFactory(object=UserFactory())
+        self.user_item = mixer.blend(
+            'multilingual_tags.TaggedItem',
+            tag=self.tag,
+            content_type=ContentType.objects.get_for_model(User),
+            object_id=mixer.blend('auth.User').pk)
 
     def test_manager(self):
         self.assertEqual(
@@ -60,11 +73,4 @@ class TagManagerTestCase(TestCase):
                 tagged_items__object_id=self.dummy.id,
                 tagged_items__content_type=ContentType.objects.get_for_model(
                     DummyModel))),
-            msg='Expected different tags from the manager.')
-
-        self.assertEqual(
-            list(models.Tag.objects.get_for_queryset(
-                DummyModel.objects.all())),
-            list(models.Tag.objects.exclude(
-                tagged_items__id=self.user_item.id)),
             msg='Expected different tags from the manager.')

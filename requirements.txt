@@ -1,3 +1,4 @@
+django
 django-nose
 django-libs
 coverage
@@ -5,5 +6,5 @@ django-coverage
 ipdb
 flake8
 fabric
-factory_boy
+mixer
 mock

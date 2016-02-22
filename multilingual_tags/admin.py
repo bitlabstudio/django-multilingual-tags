@@ -1,7 +1,7 @@
 """Admin classes for the multilingual_tags app."""
 from django import forms
 from django.contrib import admin
-from django.contrib.contenttypes.generic import (
+from django.contrib.contenttypes.admin import (
     BaseGenericInlineFormSet,
     GenericTabularInline,
 )
