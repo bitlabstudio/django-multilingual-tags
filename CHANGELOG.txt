@@ -1,5 +1,9 @@
 === ongoing ===
 
+=== 0.9.1 ===
+
+- added new migrations
+
 === 0.9 ===
 
 - prepared app for Django 1.8
