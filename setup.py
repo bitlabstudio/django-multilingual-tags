@@ -45,7 +45,6 @@ dev_requires = [
 
 install_requires = [
     'django',
-    'south',
 ]
 
 dependency_links = [
