@@ -44,7 +44,7 @@ Add a generic relation to the model, that you intend to tag.
 
 .. code-block:: python
 
-    from django.contrib.contenttypes import generic
+    from django.contrib.contenttypes.fields import GenericRelation
     from django.db import models
 
 
@@ -54,7 +54,7 @@ Add a generic relation to the model, that you intend to tag.
         # some other model stuff goes here
         # ...
 
-        special_attributes = generic.GenericRelation(
+        special_attributes = GenericRelation(
             'multilingual_tags.TaggedItem',
         )
 
