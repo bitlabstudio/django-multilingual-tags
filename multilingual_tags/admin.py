@@ -7,7 +7,7 @@ from django.contrib.contenttypes.admin import (
 )
 from django.utils.translation import ugettext_lazy as _
 
-from hvad.admin import TranslatableAdmin
+from parler.admin import TranslatableAdmin
 
 from . import models
 

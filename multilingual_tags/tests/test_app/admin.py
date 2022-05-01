@@ -9,4 +9,5 @@ from . import models
 class DummyAdmin(admin.ModelAdmin):
     inlines = [TaggedItemInline]
 
+
 admin.site.register(models.DummyModel, DummyAdmin)

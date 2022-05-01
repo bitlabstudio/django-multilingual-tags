@@ -33,7 +33,6 @@ import multilingual_tags as app
 
 
 dev_requires = [
-    'django-nose',
     'coverage',
     'django-coverage',
     'ipdb',
@@ -45,11 +44,7 @@ dev_requires = [
 
 install_requires = [
     'django',
-]
-
-dependency_links = [
-    # needs this dev version for django 1.6 fixes
-    'https://github.com/KristianOellegaard/django-hvad/tarball/0e2101f15404eaf9611cd6cf843bfc424117b227',  # NOQA
+    'django-parler',
 ]
 
 
@@ -59,6 +54,7 @@ def read(fname):
     except IOError:
         return ''
 
+
 setup(
     name="django-multilingual-tags",
     version=app.__version__,
@@ -66,14 +62,13 @@ setup(
     long_description=read('README.rst'),
     license='The MIT License',
     platforms=['OS Independent'],
-    keywords='django, app, reusable, translatable, tags, tagging, tag, multilingual',  # NOQA
-    author='Daniel Kaufhold',
-    author_email='daniel.kaufhold@bitmazk.com',
-    url="https://github.com/bitmazk/django-multilingual-tags",
+    keywords='django, app, reusable, translatable, tags, tagging, tag, multilingual',
+    author='Tobias Lorenz',
+    author_email='tobias.lorenz@bitlabstudio.com',
+    url="https://github.com/bitlabstudio/django-multilingual-tags",
     packages=find_packages(),
     include_package_data=True,
     install_requires=install_requires,
-    dependency_links=dependency_links,
     extras_require={
         'dev': dev_requires,
     },

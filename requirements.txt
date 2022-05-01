@@ -1,10 +1,10 @@
-django
-django-nose
+Django==2.2.28
+django-parler==2.3
 django-libs
 coverage
 django-coverage
 ipdb
 flake8
-fabric
+fabric3
 mixer
 mock

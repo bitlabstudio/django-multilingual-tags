@@ -33,19 +33,27 @@ STATICFILES_DIRS = (
     os.path.join(APP_ROOT, 'static'),
 )
 
+MIDDLEWARE = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+)
+
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
     'APP_DIRS': True,
-    'DIRS': [os.path.join(APP_ROOT, 'tests/test_app/templates')],
+    'DIRS': [os.path.join(os.path.dirname(__file__), '../templates')],
     'OPTIONS': {
         'context_processors': (
             'django.contrib.auth.context_processors.auth',
-            'django.core.context_processors.i18n',
-            'django.core.context_processors.request',
-            'django.core.context_processors.media',
-            'django.core.context_processors.static',
-            'cms.context_processors.media',
-            'sekizai.context_processors.sekizai',
+            'django.contrib.messages.context_processors.messages',
+            'django.template.context_processors.i18n',
+            'django.template.context_processors.request',
+            'django.template.context_processors.media',
+            'django.template.context_processors.static',
         )
     }
 }]
@@ -60,14 +68,24 @@ EXTERNAL_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sitemaps',
     'django.contrib.sites',
-    'django_nose',
-    'hvad',
+    'parler',
 ]
 
 INTERNAL_APPS = [
     'multilingual_tags',
     'multilingual_tags.tests.test_app',
 ]
+
+PARLER_LANGUAGES = {
+    None: (
+        {'code': 'en'},
+        {'code': 'de'},
+    ),
+    'default': {
+        'fallback': 'en',             # defaults to PARLER_DEFAULT_LANGUAGE_CODE
+        'hide_untranslated': False,   # the default; let .active_translations() return fallbacks too.
+    }
+}
 
 INSTALLED_APPS = EXTERNAL_APPS + INTERNAL_APPS
 

@@ -4,10 +4,11 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _, get_language
 from django.conf import settings
 
-from hvad.models import TranslatableModel, TranslatedFields, TranslationManager
+from parler.managers import TranslatableManager
+from parler.models import TranslatableModel, TranslatedFields
 
 
-class TagManager(TranslationManager):
+class TagManager(TranslatableManager):
     """Manager for the `Tag` model."""
     def get_for_model(self, obj):
         """Returns the tags for a specific model/content type."""
@@ -62,7 +63,7 @@ class Tag(TranslatableModel):
 
     objects = TagManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.safe_translation_getter('name', self.slug)
 
 
@@ -79,11 +80,13 @@ class TaggedItem(models.Model):
         Tag,
         verbose_name=_('Tag'),
         related_name='tagged_items',
+        on_delete=models.CASCADE,
     )
 
     content_type = models.ForeignKey(
         ctype_models.ContentType,
         related_name='tagged_items',
+        on_delete=models.CASCADE,
     )
     object_id = models.PositiveIntegerField()
     object = fields.GenericForeignKey('content_type', 'object_id')
@@ -93,9 +96,10 @@ class TaggedItem(models.Model):
         verbose_name=_('user'),
         related_name='tagged_items',
         blank=True, null=True,
+        on_delete=models.SET_NULL,
     )
 
-    def __unicode__(self):
+    def __str__(self):
         return u'{0}: #{1}'.format(self.object, self.tag)
 
     class Meta:

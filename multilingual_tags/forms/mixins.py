@@ -3,7 +3,7 @@ from django import forms
 from django.forms.utils import ErrorList
 from django.contrib.contenttypes.models import ContentType
 from django.utils.text import slugify
-from django.utils.translation import get_language, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 from .. import models
 
@@ -45,7 +45,6 @@ class TaggingFormMixin(object):
         def clean_field():
             self._tags_added = []
             self._taggeditems = []
-            language = get_language()
             max_tags = self._get_tag_field_max_tags()
 
             data = self.data.get(self._get_tag_field_name())
@@ -70,7 +69,7 @@ class TaggingFormMixin(object):
                     tag = models.Tag.objects.create(
                         slug=slugify(tag_string),
                         name=tag_string,
-                        language_code=language)
+                    )
                 # prevent duplicate tags
                 if tag not in self._tags_added:
                     self._tags_added.append(tag)
