@@ -1,11 +1,12 @@
 """Admin classes for the multilingual_tags app."""
+
 from django import forms
 from django.contrib import admin
 from django.contrib.contenttypes.admin import (
     BaseGenericInlineFormSet,
     GenericTabularInline,
 )
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from parler.admin import TranslatableAdmin
 
@@ -20,10 +21,9 @@ class TaggedItemInlineFormSet(BaseGenericInlineFormSet):
         # validate, that every tag is only used once
         tags = []
         for i in range(0, self.total_form_count()):
-            tags.append(self.data.get('{0}-{1}-tag'.format(self.prefix, i)))
+            tags.append(self.data.get("{0}-{1}-tag".format(self.prefix, i)))
         if len(tags) != len(set(tags)):
-            raise forms.ValidationError(_(
-                'A Tag may only exist once per object.'))
+            raise forms.ValidationError(_("A Tag may only exist once per object."))
         return cleaned_data
 
 
